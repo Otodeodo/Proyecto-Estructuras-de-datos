@@ -27,7 +27,8 @@ public class Grafo {
 
     public List<String> bfs(String start) {
         List<String> orden = new ArrayList<>();
-        if (!adyacenciaPesos.containsKey(start)) return orden;
+        if (!adyacenciaPesos.containsKey(start))
+            return orden;
         Set<String> visitado = new HashSet<>();
         Queue<String> q = new ArrayDeque<>();
         visitado.add(start);
@@ -53,11 +54,13 @@ public class Grafo {
     }
 
     private void dfsRec(String v, Set<String> visitado, List<String> orden) {
-        if (!adyacenciaPesos.containsKey(v) || visitado.contains(v)) return;
+        if (!adyacenciaPesos.containsKey(v) || visitado.contains(v))
+            return;
         visitado.add(v);
         orden.add(v);
         for (String w : adyacenciaPesos.getOrDefault(v, Collections.emptyMap()).keySet()) {
-            if (!visitado.contains(w)) dfsRec(w, visitado, orden);
+            if (!visitado.contains(w))
+                dfsRec(w, visitado, orden);
         }
     }
 
@@ -84,57 +87,93 @@ public class Grafo {
         adyacenciaPesos.clear();
     }
 
-    // Resultado de camino mínimo
-    public static class PathResult {
-        public final List<String> path;
-        public final int cost;
-        public PathResult(List<String> path, int cost) {
-            this.path = path;
-            this.cost = cost;
+    // Clase interna para representar aristas
+    public static class Edge implements Comparable<Edge> {
+        public String src, dest;
+        public int weight;
+
+        public Edge(String src, String dest, int weight) {
+            this.src = src;
+            this.dest = dest;
+            this.weight = weight;
+        }
+
+        @Override
+        public int compareTo(Edge other) {
+            return Integer.compare(this.weight, other.weight);
+        }
+
+        @Override
+        public String toString() {
+            return src + "-" + dest + "(" + weight + ")";
         }
     }
 
-    // Dijkstra para camino más barato de start a target
-    public PathResult shortestPath(String start, String target) {
-        if (!adyacenciaPesos.containsKey(start) || !adyacenciaPesos.containsKey(target)) {
-            return new PathResult(Collections.emptyList(), -1);
+    // Resultado de Kruskal
+    public static class MSTResult {
+        public final List<Edge> edges;
+        public final int totalWeight;
+
+        public MSTResult(List<Edge> edges, int totalWeight) {
+            this.edges = edges;
+            this.totalWeight = totalWeight;
         }
+    }
 
-        Map<String, Integer> dist = new HashMap<>();
-        Map<String, String> prev = new HashMap<>();
-        for (String v : adyacenciaPesos.keySet()) dist.put(v, Integer.MAX_VALUE);
-        dist.put(start, 0);
+    // Algoritmo de Kruskal para MST
+    public MSTResult kruskalMST() {
+        List<Edge> allEdges = new ArrayList<>();
+        // Recolectar todas las aristas. Como es no dirigido (o tratado como tal para
+        // MST usualmente),
+        // debemos tener cuidado de no duplicar si el grafo es bidireccional en la
+        // estructura.
+        // Aquí asumiremos que si existe A->B y B->A con el mismo peso, es la misma
+        // arista.
+        // Para simplificar, agregamos todas y el Union-Find se encarga de los ciclos.
+        Set<String> added = new HashSet<>();
 
-        PriorityQueue<String> pq = new PriorityQueue<>(Comparator.comparingInt(dist::get));
-        pq.add(start);
-
-        while (!pq.isEmpty()) {
-            String v = pq.poll();
-            int dv = dist.get(v);
-            if (v.equals(target)) break;
-            for (Map.Entry<String, Integer> e : adyacenciaPesos.getOrDefault(v, Collections.emptyMap()).entrySet()) {
-                String w = e.getKey();
-                int peso = e.getValue();
-                int nd = dv == Integer.MAX_VALUE ? Integer.MAX_VALUE : dv + peso;
-                if (nd < dist.getOrDefault(w, Integer.MAX_VALUE)) {
-                    dist.put(w, nd);
-                    prev.put(w, v);
-                    pq.remove(w); // actualizar prioridad si existía
-                    pq.add(w);
+        for (Map.Entry<String, Map<String, Integer>> e : adyacenciaPesos.entrySet()) {
+            String u = e.getKey();
+            for (Map.Entry<String, Integer> w : e.getValue().entrySet()) {
+                String v = w.getKey();
+                int peso = w.getValue();
+                // Ordenar u y v para evitar duplicados A-B y B-A
+                String k = u.compareTo(v) < 0 ? u + "-" + v : v + "-" + u;
+                if (!added.contains(k)) {
+                    allEdges.add(new Edge(u, v, peso));
+                    added.add(k);
                 }
             }
         }
 
-        if (dist.getOrDefault(target, Integer.MAX_VALUE) == Integer.MAX_VALUE) {
-            return new PathResult(Collections.emptyList(), -1);
+        Collections.sort(allEdges);
+
+        // Union-Find
+        Map<String, String> parent = new HashMap<>();
+        for (String v : adyacenciaPesos.keySet())
+            parent.put(v, v);
+
+        List<Edge> mstEdges = new ArrayList<>();
+        int mstWeight = 0;
+
+        for (Edge edge : allEdges) {
+            String rootU = find(parent, edge.src);
+            String rootV = find(parent, edge.dest);
+
+            if (!rootU.equals(rootV)) {
+                mstEdges.add(edge);
+                mstWeight += edge.weight;
+                parent.put(rootU, rootV);
+            }
         }
-        // reconstruir camino
-        LinkedList<String> path = new LinkedList<>();
-        String cur = target;
-        while (cur != null) {
-            path.addFirst(cur);
-            cur = prev.get(cur);
+
+        return new MSTResult(mstEdges, mstWeight);
+    }
+
+    private String find(Map<String, String> parent, String i) {
+        if (!parent.get(i).equals(i)) {
+            parent.put(i, find(parent, parent.get(i)));
         }
-        return new PathResult(path, dist.get(target));
+        return parent.get(i);
     }
 }
