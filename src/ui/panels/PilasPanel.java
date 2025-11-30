@@ -106,8 +106,7 @@ public class PilasPanel extends JPanel {
     }
 
     private void refresh(ui.components.StackView stackView) {
-        // output.setText(pila.toString() + "\nTamaño: " + pila.size()); // No sobreescribir log
-        // Solo actualizar vista gráfica y quizás append estado
+
         stackView.setStack(pila.toList());
     }
 }

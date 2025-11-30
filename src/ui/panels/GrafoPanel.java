@@ -56,7 +56,6 @@ public class GrafoPanel extends JPanel {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         card.add(vertexPanel, gbc);
 
-        // --- Sección: Conexiones ---
         gbc.gridy++;
         JPanel edgePanel = new JPanel(new GridBagLayout());
         edgePanel.setOpaque(false);
@@ -68,7 +67,6 @@ public class GrafoPanel extends JPanel {
         egbc.insets = new Insets(4, 8, 4, 8);
         egbc.anchor = GridBagConstraints.WEST;
 
-        // Fila 1: Inputs
         egbc.gridx = 0;
         egbc.gridy = 0;
         edgePanel.add(new JLabel("De:"), egbc);
@@ -88,7 +86,7 @@ public class GrafoPanel extends JPanel {
         weightInput = new JTextField(6);
         edgePanel.add(weightInput, egbc);
 
-        // Fila 2: Botones
+
         egbc.gridx = 0;
         egbc.gridy = 1;
         egbc.gridwidth = 6;
@@ -106,7 +104,7 @@ public class GrafoPanel extends JPanel {
 
         card.add(edgePanel, gbc);
 
-        // --- Sección: Rutas y Algoritmos ---
+
         gbc.gridy++;
         JPanel pathsPanel = new JPanel(new GridBagLayout());
         pathsPanel.setOpaque(false);
@@ -118,7 +116,7 @@ public class GrafoPanel extends JPanel {
         pgbc.insets = new Insets(4, 8, 4, 8);
         pgbc.anchor = GridBagConstraints.WEST;
 
-        // Fila 1: Inputs
+
         pgbc.gridx = 0;
         pgbc.gridy = 0;
         pathsPanel.add(new JLabel("Origen:"), pgbc);
@@ -132,7 +130,7 @@ public class GrafoPanel extends JPanel {
         targetInput = new JTextField(8);
         pathsPanel.add(targetInput, pgbc);
 
-        // Fila 2: Botones de Algoritmos
+
         pgbc.gridx = 0;
         pgbc.gridy = 1;
         pgbc.gridwidth = 4;
@@ -284,7 +282,7 @@ public class GrafoPanel extends JPanel {
         sb.append("\nCosto Total: ").append(result.totalWeight).append("m");
         output.append(sb.toString());
 
-        // Visualizar el MST resaltando las aristas
+
         graphView.setHighlightedEdges(result.edges);
     }
 

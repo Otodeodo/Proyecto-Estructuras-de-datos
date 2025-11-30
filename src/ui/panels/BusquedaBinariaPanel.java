@@ -111,7 +111,7 @@ public class BusquedaBinariaPanel extends JPanel {
         // Vista visual del arreglo
         ui.components.ArrayView arrayView = new ui.components.ArrayView();
         gbc.gridy++;
-        gbc.weighty = 1; // Give extra space to array view
+        gbc.weighty = 1; 
         gbc.fill = GridBagConstraints.BOTH;
         card.add(arrayView, gbc);
 
