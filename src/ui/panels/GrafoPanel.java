@@ -35,97 +35,129 @@ public class GrafoPanel extends JPanel {
 
         CardPanel card = new CardPanel();
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(6, 6, 6, 6);
+        gbc.insets = new Insets(8, 8, 8, 8);
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.anchor = GridBagConstraints.WEST;
+
+        // --- Sección: Agregar Mesa ---
+        JPanel vertexPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
+        vertexPanel.setOpaque(false);
         JLabel vLbl = new JLabel("Nueva mesa/zona:");
         vLbl.setFont(Theme.PRIMARY);
-        card.add(vLbl, gbc);
-        gbc.gridx = 1;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.weightx = 1;
-        vertexInput = new JTextField(10);
-        card.add(vertexInput, gbc);
-        gbc.gridx = 2;
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.weightx = 0;
+        vertexPanel.add(vLbl);
+        vertexInput = new JTextField(12);
+        vertexPanel.add(vertexInput);
         JButton addVertex = new JButton("Agregar Mesa");
         Theme.styleButtonLight(addVertex);
-        card.add(addVertex, gbc);
+        vertexPanel.add(addVertex);
 
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.anchor = GridBagConstraints.WEST;
-        // Fila de arista organizada en FlowLayout
-        JLabel eLbl = new JLabel("Conexión:");
-        eLbl.setFont(Theme.PRIMARY);
-        JPanel edgeRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
-        edgeRow.setOpaque(false);
-        JLabel deLbl = new JLabel("de:");
-        deLbl.setFont(Theme.PRIMARY);
+        gbc.gridwidth = 2;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        card.add(vertexPanel, gbc);
+
+        // --- Sección: Conexiones ---
+        gbc.gridy++;
+        JPanel edgePanel = new JPanel(new GridBagLayout());
+        edgePanel.setOpaque(false);
+        edgePanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Theme.ACCENT), "Conexión",
+                javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION,
+                Theme.PRIMARY, Theme.ACCENT));
+
+        GridBagConstraints egbc = new GridBagConstraints();
+        egbc.insets = new Insets(4, 8, 4, 8);
+        egbc.anchor = GridBagConstraints.WEST;
+
+        // Fila 1: Inputs
+        egbc.gridx = 0;
+        egbc.gridy = 0;
+        edgePanel.add(new JLabel("De:"), egbc);
+        egbc.gridx = 1;
         fromInput = new JTextField(8);
-        JLabel aLbl = new JLabel("a:");
-        aLbl.setFont(Theme.PRIMARY);
+        edgePanel.add(fromInput, egbc);
+
+        egbc.gridx = 2;
+        edgePanel.add(new JLabel("A:"), egbc);
+        egbc.gridx = 3;
         toInput = new JTextField(8);
-        JLabel wLbl = new JLabel("distancia (m):");
-        wLbl.setFont(Theme.PRIMARY);
+        edgePanel.add(toInput, egbc);
+
+        egbc.gridx = 4;
+        edgePanel.add(new JLabel("Distancia (m):"), egbc);
+        egbc.gridx = 5;
         weightInput = new JTextField(6);
+        edgePanel.add(weightInput, egbc);
+
+        // Fila 2: Botones
+        egbc.gridx = 0;
+        egbc.gridy = 1;
+        egbc.gridwidth = 6;
+        JPanel edgeButtons = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        edgeButtons.setOpaque(false);
         bidirectional = new JCheckBox("Bidireccional", true);
+        bidirectional.setOpaque(false);
+        bidirectional.setFont(Theme.PRIMARY);
+        edgeButtons.add(bidirectional);
+        edgeButtons.add(Box.createHorizontalStrut(15));
         JButton addEdge = new JButton("Conectar Mesas");
         Theme.styleButtonLight(addEdge);
-        edgeRow.add(eLbl);
-        edgeRow.add(deLbl);
-        edgeRow.add(fromInput);
-        edgeRow.add(aLbl);
-        edgeRow.add(toInput);
-        edgeRow.add(wLbl);
-        edgeRow.add(weightInput);
-        edgeRow.add(bidirectional);
-        edgeRow.add(addEdge);
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.gridwidth = 6;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.weightx = 1;
-        card.add(edgeRow, gbc);
+        edgeButtons.add(addEdge);
+        edgePanel.add(edgeButtons, egbc);
 
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        gbc.anchor = GridBagConstraints.WEST;
-        // Fila de recorridos organizada en FlowLayout
-        JPanel pathsRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
-        pathsRow.setOpaque(false);
-        JLabel sLbl = new JLabel("Mesa Origen:");
-        sLbl.setFont(Theme.PRIMARY);
-        startInput = new JTextField(10);
-        JLabel tLbl = new JLabel("Mesa Destino:");
-        tLbl.setFont(Theme.PRIMARY);
-        targetInput = new JTextField(10);
-        JPanel buttons = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
-        JButton bfs = new JButton("Ruta (Búsqueda en Anchura)");
-        JButton dfs = new JButton("Ruta (Búsqueda en Profundidad)");
-        JButton shortest = new JButton("Árbol de Expansión Mínima (Kruskal)");
-        JButton limpiar = new JButton("Limpiar Mapa");
+        card.add(edgePanel, gbc);
+
+        // --- Sección: Rutas y Algoritmos ---
+        gbc.gridy++;
+        JPanel pathsPanel = new JPanel(new GridBagLayout());
+        pathsPanel.setOpaque(false);
+        pathsPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Theme.ACCENT),
+                "Rutas y Algoritmos", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
+                javax.swing.border.TitledBorder.DEFAULT_POSITION, Theme.PRIMARY, Theme.ACCENT));
+
+        GridBagConstraints pgbc = new GridBagConstraints();
+        pgbc.insets = new Insets(4, 8, 4, 8);
+        pgbc.anchor = GridBagConstraints.WEST;
+
+        // Fila 1: Inputs
+        pgbc.gridx = 0;
+        pgbc.gridy = 0;
+        pathsPanel.add(new JLabel("Origen:"), pgbc);
+        pgbc.gridx = 1;
+        startInput = new JTextField(8);
+        pathsPanel.add(startInput, pgbc);
+
+        pgbc.gridx = 2;
+        pathsPanel.add(new JLabel("Destino:"), pgbc);
+        pgbc.gridx = 3;
+        targetInput = new JTextField(8);
+        pathsPanel.add(targetInput, pgbc);
+
+        // Fila 2: Botones de Algoritmos
+        pgbc.gridx = 0;
+        pgbc.gridy = 1;
+        pgbc.gridwidth = 4;
+        JPanel algoButtons = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+        algoButtons.setOpaque(false);
+
+        JButton bfs = new JButton("BFS (Anchura)");
+        JButton dfs = new JButton("DFS (Profundidad)");
+        JButton shortest = new JButton("MST (Kruskal)");
+        JButton limpiar = new JButton("Limpiar");
+
         Theme.styleButtonLight(bfs);
         Theme.styleButtonLight(dfs);
         Theme.styleButtonLight(shortest);
         Theme.styleButtonLight(limpiar);
-        buttons.add(bfs);
-        buttons.add(dfs);
-        buttons.add(shortest);
-        buttons.add(limpiar);
-        pathsRow.add(sLbl);
-        pathsRow.add(startInput);
-        pathsRow.add(tLbl);
-        pathsRow.add(targetInput);
-        pathsRow.add(buttons);
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        gbc.gridwidth = 6;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.weightx = 1;
-        card.add(pathsRow, gbc);
+
+        algoButtons.add(bfs);
+        algoButtons.add(dfs);
+        algoButtons.add(shortest);
+        algoButtons.add(Box.createHorizontalStrut(10));
+        algoButtons.add(limpiar);
+
+        pathsPanel.add(algoButtons, pgbc);
+
+        card.add(pathsPanel, gbc);
 
         center.add(card, BorderLayout.NORTH);
 
@@ -186,6 +218,10 @@ public class GrafoPanel extends JPanel {
                 peso = Integer.parseInt(wStr);
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(this, "La distancia debe ser entera", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Error al procesar la distancia: " + ex.getMessage(), "Error",
+                        JOptionPane.ERROR_MESSAGE);
                 return;
             }
             if (peso < 0) {

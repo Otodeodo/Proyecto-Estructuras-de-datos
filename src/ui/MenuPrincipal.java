@@ -6,8 +6,8 @@ import javax.swing.*;
 import ui.panels.ArreglosPanel;
 import ui.panels.PilasPanel;
 import ui.panels.ColasPanel;
-import ui.panels.ListaCircularPanel;
-import ui.panels.ShellSortPanel;
+import ui.panels.ListaDoblementeLigadaPanel;
+import ui.panels.InsertionSortPanel;
 import ui.panels.BusquedaBinariaPanel;
 import ui.panels.ArbolBinarioPanel;
 import ui.panels.GrafoPanel;
@@ -39,12 +39,12 @@ public class MenuPrincipal extends JFrame {
         toolBar.setFloatable(false);
         toolBar.setBorder(BorderFactory.createEmptyBorder(8, 20, 8, 20));
         toolBar.setBackground(new Color(255, 245, 230)); // Fondo ligero para la barra
-        
+
         addNavButton(toolBar, "Menú (Arreglos)", "Arreglos");
         addNavButton(toolBar, "Pila de Tortillas", "Pilas");
         addNavButton(toolBar, "Fila de Clientes", "Colas");
-        addNavButton(toolBar, "Rueda de Salsas", "ListaCircular");
-        addNavButton(toolBar, "Ordenar Pedidos", "ShellSort");
+        addNavButton(toolBar, "Fila de Órdenes", "ListaDoblementeLigada");
+        addNavButton(toolBar, "Ordenamiento Inserción", "InsertionSort");
         addNavButton(toolBar, "Buscar Ingrediente", "BusquedaBinaria");
         addNavButton(toolBar, "Árbol de Recetas", "ArbolBinario");
         addNavButton(toolBar, "Mapa del Local", "Grafo");
@@ -57,15 +57,14 @@ public class MenuPrincipal extends JFrame {
         JScrollPane navScroller = new JScrollPane(
                 toolBar,
                 ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER,
-                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED
-        );
+                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         navScroller.setBorder(BorderFactory.createEmptyBorder(8, 20, 8, 20));
         navScroller.getViewport().setOpaque(false);
         navScroller.setOpaque(false);
         top.add(navScroller, BorderLayout.SOUTH);
-        
+
         getContentPane().add(top, BorderLayout.NORTH);
-        
+
         JScrollPane sp = new JScrollPane(cardPanel);
         sp.setBorder(BorderFactory.createEmptyBorder(12, 20, 12, 20));
         sp.getViewport().setBackground(Theme.BG);
@@ -82,8 +81,8 @@ public class MenuPrincipal extends JFrame {
         cardPanel.add(new ArreglosPanel(), "Arreglos");
         cardPanel.add(new PilasPanel(), "Pilas");
         cardPanel.add(new ColasPanel(), "Colas");
-        cardPanel.add(new ListaCircularPanel(), "ListaCircular");
-        cardPanel.add(new ShellSortPanel(), "ShellSort");
+        cardPanel.add(new ListaDoblementeLigadaPanel(), "ListaDoblementeLigada");
+        cardPanel.add(new InsertionSortPanel(), "InsertionSort");
         cardPanel.add(new BusquedaBinariaPanel(), "BusquedaBinaria");
         cardPanel.add(new ArbolBinarioPanel(), "ArbolBinario");
         cardPanel.add(new GrafoPanel(), "Grafo");
@@ -99,7 +98,7 @@ public class MenuPrincipal extends JFrame {
         bar.addSeparator(new Dimension(8, 0));
     }
 
-    private void showPanel(String name) {
+    public void showPanel(String name) {
         cardLayout.show(cardPanel, name);
     }
 }

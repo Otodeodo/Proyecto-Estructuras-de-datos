@@ -22,7 +22,8 @@ public class BinaryTreeView extends JPanel {
 
     public void highlightNodes(java.util.Collection<Integer> nodes) {
         highlight.clear();
-        if (nodes != null) highlight.addAll(nodes);
+        if (nodes != null)
+            highlight.addAll(nodes);
         repaint();
     }
 
@@ -43,7 +44,8 @@ public class BinaryTreeView extends JPanel {
 
     public void animatePath(java.util.List<Integer> seq, int delayMs) {
         stopAnimation();
-        if (seq == null || seq.isEmpty()) return;
+        if (seq == null || seq.isEmpty())
+            return;
         animSeq = new java.util.ArrayList<>(seq);
         animIndex = 0;
         highlight.clear();
@@ -77,21 +79,30 @@ public class BinaryTreeView extends JPanel {
         }
 
         Map<Integer, Integer> xOrder = new HashMap<>();
-        for (int i = 0; i < inorder.size(); i++) xOrder.put(inorder.get(i), i);
+        for (int i = 0; i < inorder.size(); i++)
+            xOrder.put(inorder.get(i), i);
 
         int w = getWidth();
         int h = getHeight();
-        int marginX = 40;
         int marginY = 30;
         int levels = nodes.stream().mapToInt(n -> n.depth).max().orElse(0) + 1;
         int levelGap = Math.max(60, (h - 2 * marginY) / Math.max(levels, 1));
         int nodeR = 16;
 
+        // Calculate optimal step (gap between nodes)
+        // Don't stretch too much if few nodes. Max gap 60px.
+        double maxStep = 60.0;
+        double availableWidth = w - 80; // 40px margin each side
+        double step = Math.min(maxStep, availableWidth / Math.max(inorder.size() - 1, 1));
+
+        // Center the tree content
+        double totalTreeWidth = step * (inorder.size() - 1);
+        double startX = (w - totalTreeWidth) / 2.0;
+
         Map<Integer, Point> pos = new HashMap<>();
         for (ArbolBinario.NodeData nd : nodes) {
             int idx = xOrder.getOrDefault(nd.value, 0);
-            double step = (double) (w - 2 * marginX) / Math.max(inorder.size() - 1, 1);
-            int x = (int) (marginX + idx * step);
+            int x = (int) (startX + idx * step);
             int y = marginY + nd.depth * levelGap;
             pos.put(nd.value, new Point(x, y));
         }

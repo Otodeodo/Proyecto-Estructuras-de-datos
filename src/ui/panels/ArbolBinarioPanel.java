@@ -29,12 +29,21 @@ public class ArbolBinarioPanel extends JPanel {
 
         CardPanel card = new CardPanel();
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(6,6,6,6);
-        gbc.gridx = 0; gbc.gridy = 0; gbc.anchor = GridBagConstraints.WEST;
-        JLabel lbl = new JLabel("ID Receta (int):"); lbl.setFont(Theme.PRIMARY); card.add(lbl, gbc);
-        gbc.gridx = 1; gbc.fill = GridBagConstraints.HORIZONTAL; gbc.weightx = 1;
-        input = new JTextField(10); card.add(input, gbc);
-        gbc.gridx = 0; gbc.gridy = 1; gbc.gridwidth = 2;
+        gbc.insets = new Insets(6, 6, 6, 6);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.WEST;
+        JLabel lbl = new JLabel("ID Receta (int):");
+        lbl.setFont(Theme.PRIMARY);
+        card.add(lbl, gbc);
+        gbc.gridx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1;
+        input = new JTextField(10);
+        card.add(input, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.gridwidth = 2;
         JPanel buttons = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
         JButton insert = new JButton("Insertar Receta");
         JButton search = new JButton("Buscar Receta");
@@ -43,10 +52,20 @@ public class ArbolBinarioPanel extends JPanel {
         JButton preOrder = new JButton("Pre-Orden");
         JButton postOrder = new JButton("Post-Orden");
         JButton limpiar = new JButton("Limpiar Árbol");
-        Theme.styleButtonLight(insert); Theme.styleButtonLight(search); Theme.styleButtonLight(delete);
-        Theme.styleButtonLight(inOrder); Theme.styleButtonLight(preOrder); Theme.styleButtonLight(postOrder); Theme.styleButtonLight(limpiar);
-        buttons.add(insert); buttons.add(search); buttons.add(delete);
-        buttons.add(inOrder); buttons.add(preOrder); buttons.add(postOrder); buttons.add(limpiar);
+        Theme.styleButtonLight(insert);
+        Theme.styleButtonLight(search);
+        Theme.styleButtonLight(delete);
+        Theme.styleButtonLight(inOrder);
+        Theme.styleButtonLight(preOrder);
+        Theme.styleButtonLight(postOrder);
+        Theme.styleButtonLight(limpiar);
+        buttons.add(insert);
+        buttons.add(search);
+        buttons.add(delete);
+        buttons.add(inOrder);
+        buttons.add(preOrder);
+        buttons.add(postOrder);
+        buttons.add(limpiar);
         card.add(buttons, gbc);
 
         center.add(card, BorderLayout.NORTH);
@@ -63,13 +82,31 @@ public class ArbolBinarioPanel extends JPanel {
         sp.setBorder(Theme.titled("Estado del Árbol de Recetas"));
         add(sp, BorderLayout.SOUTH);
 
-        insert.addActionListener(e -> { onInsert(); treeView.clearHighlight(); treeView.repaint(); });
+        insert.addActionListener(e -> {
+            onInsert();
+            treeView.clearHighlight();
+            treeView.repaint();
+        });
         search.addActionListener(e -> onSearch(treeView));
-        delete.addActionListener(e -> { onDelete(); treeView.clearHighlight(); treeView.repaint(); });
-        inOrder.addActionListener(e -> { onTraverse("in", treeView); });
-        preOrder.addActionListener(e -> { onTraverse("pre", treeView); });
-        postOrder.addActionListener(e -> { onTraverse("post", treeView); });
-        limpiar.addActionListener(e -> { onLimpiar(); treeView.clearHighlight(); treeView.repaint(); });
+        delete.addActionListener(e -> {
+            onDelete();
+            treeView.clearHighlight();
+            treeView.repaint();
+        });
+        inOrder.addActionListener(e -> {
+            onTraverse("in", treeView);
+        });
+        preOrder.addActionListener(e -> {
+            onTraverse("pre", treeView);
+        });
+        postOrder.addActionListener(e -> {
+            onTraverse("post", treeView);
+        });
+        limpiar.addActionListener(e -> {
+            onLimpiar();
+            treeView.clearHighlight();
+            treeView.repaint();
+        });
     }
 
     private void onInsert() {
@@ -79,7 +116,11 @@ public class ArbolBinarioPanel extends JPanel {
             input.setText("");
             output.setText("Receta insertada: " + v);
         } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "Ingrese un entero válido", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Ingrese un entero válido para insertar", "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Error al insertar: " + ex.getMessage(), "Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -87,12 +128,16 @@ public class ArbolBinarioPanel extends JPanel {
         try {
             int v = Integer.parseInt(input.getText().trim());
             List<Integer> path = arbol.pathTo(v);
-            boolean ok = !path.isEmpty() && path.get(path.size()-1) == v;
+            boolean ok = !path.isEmpty() && path.get(path.size() - 1) == v;
             output.setText((ok ? "Receta encontrada" : "Receta no encontrada") + ": ruta " + path);
             // Animar la ruta de búsqueda para que se note el recorrido
             treeView.animatePath(path, 450);
         } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "Ingrese un entero válido", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Ingrese un entero válido para buscar", "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Error al buscar: " + ex.getMessage(), "Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -102,7 +147,11 @@ public class ArbolBinarioPanel extends JPanel {
             arbol.delete(v);
             output.setText("Receta eliminada: " + v);
         } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "Ingrese un entero válido", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Ingrese un entero válido para eliminar", "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Error al eliminar: " + ex.getMessage(), "Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -110,9 +159,18 @@ public class ArbolBinarioPanel extends JPanel {
         List<Integer> res;
         String label;
         switch (type) {
-            case "in": res = arbol.inOrder(); label = "In-Orden (Ingredientes)"; break;
-            case "pre": res = arbol.preOrder(); label = "Pre-Orden (Preparación)"; break;
-            default: res = arbol.postOrder(); label = "Post-Orden (Limpieza)"; break;
+            case "in":
+                res = arbol.inOrder();
+                label = "In-Orden (Ingredientes)";
+                break;
+            case "pre":
+                res = arbol.preOrder();
+                label = "Pre-Orden (Preparación)";
+                break;
+            default:
+                res = arbol.postOrder();
+                label = "Post-Orden (Limpieza)";
+                break;
         }
         output.setText(label + ": " + res);
         // Animar el recorrido para que se note paso a paso

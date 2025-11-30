@@ -28,21 +28,31 @@ public class ArreglosPanel extends JPanel {
         CardPanel card = new CardPanel();
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(6, 6, 6, 6);
-        gbc.gridx = 0; gbc.gridy = 0; gbc.anchor = GridBagConstraints.WEST;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.WEST;
         JLabel lbl = new JLabel("IDs de platillos (enteros, separados por comas):");
         lbl.setFont(Theme.PRIMARY);
         card.add(lbl, gbc);
 
-        gbc.gridx = 1; gbc.weightx = 1; gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridx = 1;
+        gbc.weightx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
         input = new JTextField();
         card.add(input, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 1; gbc.gridwidth = 2; gbc.fill = GridBagConstraints.NONE; gbc.weightx = 0;
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.gridwidth = 2;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 0;
         JPanel buttons = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
         JButton cargar = new JButton("Servir Menú");
         JButton limpiar = new JButton("Limpiar Mesa");
-        Theme.styleButtonLight(cargar); Theme.styleButtonLight(limpiar);
-        buttons.add(cargar); buttons.add(limpiar);
+        Theme.styleButtonLight(cargar);
+        Theme.styleButtonLight(limpiar);
+        buttons.add(cargar);
+        buttons.add(limpiar);
         card.add(buttons, gbc);
 
         // Vista del arreglo y opciones
@@ -55,18 +65,29 @@ public class ArreglosPanel extends JPanel {
         // Opciones del arreglo (arriba, debajo de los botones de Cargar/Limpiar)
         JPanel opts = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 8));
         JTextField buscarTxt = new JTextField(6);
-        JLabel buscarLbl = new JLabel("Buscar Platillo (ID):"); buscarLbl.setFont(Theme.PRIMARY);
+        JLabel buscarLbl = new JLabel("Buscar Platillo (ID):");
+        buscarLbl.setFont(Theme.PRIMARY);
         JButton btnBuscar = new JButton("Buscar");
         JButton btnAsc = new JButton("Ordenar (Asc)");
         JButton btnDesc = new JButton("Ordenar (Desc)");
         JButton btnInvertir = new JButton("Invertir Orden");
-        Theme.styleButtonLight(btnBuscar); Theme.styleButtonLight(btnAsc); Theme.styleButtonLight(btnDesc);
+        Theme.styleButtonLight(btnBuscar);
+        Theme.styleButtonLight(btnAsc);
+        Theme.styleButtonLight(btnDesc);
         Theme.styleButtonLight(btnInvertir);
-        opts.add(buscarLbl); opts.add(buscarTxt); opts.add(btnBuscar);
-        opts.add(btnAsc); opts.add(btnDesc); opts.add(btnInvertir);
+        opts.add(buscarLbl);
+        opts.add(buscarTxt);
+        opts.add(btnBuscar);
+        opts.add(btnAsc);
+        opts.add(btnDesc);
+        opts.add(btnInvertir);
 
         // Colocar el bloque de opciones en la tarjeta, arriba del ArrayView
-        gbc.gridx = 0; gbc.gridy = 2; gbc.gridwidth = 2; gbc.fill = GridBagConstraints.NONE; gbc.weightx = 0;
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.gridwidth = 2;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 0;
         card.add(opts, gbc);
         // Ya no se añade al sur del centro
         add(center, BorderLayout.CENTER);
@@ -101,13 +122,16 @@ public class ArreglosPanel extends JPanel {
                         this,
                         "El menú contiene platillos repetidos: " + getDuplicateMessage(arr),
                         "Error en la cocina",
-                        JOptionPane.ERROR_MESSAGE
-                );
+                        JOptionPane.ERROR_MESSAGE);
                 // Resaltar todas las posiciones repetidas
                 arrayView.highlightIndices(dupIdx);
             }
         } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "Formato inválido: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Formato inválido: " + ex.getMessage(), "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Ocurrió un error inesperado al cargar: " + ex.getMessage(), "Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -123,32 +147,45 @@ public class ArreglosPanel extends JPanel {
             int value = Integer.parseInt(buscarTxt.getText().trim());
             java.util.List<Integer> matches = new java.util.ArrayList<>();
             for (int i = 0; i < currentArr.length; i++) {
-                if (currentArr[i] == value) { matches.add(i); }
+                if (currentArr[i] == value) {
+                    matches.add(i);
+                }
             }
             if (matches.isEmpty()) {
                 output.setText("Platillo no encontrado: " + value);
                 arrayView.clearHighlight();
-                JOptionPane.showMessageDialog(this, "El platillo " + value + " no está en el menú", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "El platillo " + value + " no está en el menú", "Error",
+                        JOptionPane.ERROR_MESSAGE);
             } else if (matches.size() > 1) {
                 output.setText("El platillo " + value + " está repetido en índices " + matches);
                 arrayView.highlightIndices(matches);
-                JOptionPane.showMessageDialog(this, "El platillo " + value + " está repetido en el menú", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "El platillo " + value + " está repetido en el menú", "Error",
+                        JOptionPane.ERROR_MESSAGE);
             } else {
                 output.setText("Platillo encontrado " + value + " en índice " + matches.get(0));
                 arrayView.highlightIndices(matches);
             }
         } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "Ingrese un entero válido", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Ingrese un entero válido para buscar", "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Error al buscar: " + ex.getMessage(), "Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
     private void onOrdenar(ui.components.ArrayView arrayView, boolean asc) {
-        if (currentArr.length == 0) { output.setText("Primero sirva el menú"); return; }
+        if (currentArr.length == 0) {
+            output.setText("Primero sirva el menú");
+            return;
+        }
         int[] copy = currentArr.clone();
         java.util.Arrays.sort(copy);
         if (!asc) {
             for (int i = 0, j = copy.length - 1; i < j; i++, j--) {
-                int tmp = copy[i]; copy[i] = copy[j]; copy[j] = tmp;
+                int tmp = copy[i];
+                copy[i] = copy[j];
+                copy[j] = tmp;
             }
         }
         currentArr = copy;
@@ -158,9 +195,14 @@ public class ArreglosPanel extends JPanel {
     }
 
     private void onInvertir(ui.components.ArrayView arrayView) {
-        if (currentArr.length == 0) { output.setText("Primero sirva el menú"); return; }
+        if (currentArr.length == 0) {
+            output.setText("Primero sirva el menú");
+            return;
+        }
         for (int i = 0, j = currentArr.length - 1; i < j; i++, j--) {
-            int tmp = currentArr[i]; currentArr[i] = currentArr[j]; currentArr[j] = tmp;
+            int tmp = currentArr[i];
+            currentArr[i] = currentArr[j];
+            currentArr[j] = tmp;
         }
         output.setText("Orden invertido: " + ArrayUtils.toString(currentArr));
         arrayView.clearHighlight();
@@ -177,19 +219,23 @@ public class ArreglosPanel extends JPanel {
         }
         java.util.List<Integer> dup = new java.util.ArrayList<>();
         for (java.util.Map.Entry<Integer, java.util.List<Integer>> e : map.entrySet()) {
-            if (e.getValue().size() > 1) dup.addAll(e.getValue());
+            if (e.getValue().size() > 1)
+                dup.addAll(e.getValue());
         }
         return dup;
     }
 
     private String getDuplicateMessage(int[] arr) {
         java.util.Map<Integer, Integer> count = new java.util.HashMap<>();
-        for (int v : arr) { count.put(v, count.getOrDefault(v, 0) + 1); }
+        for (int v : arr) {
+            count.put(v, count.getOrDefault(v, 0) + 1);
+        }
         StringBuilder sb = new StringBuilder();
         boolean first = true;
         for (java.util.Map.Entry<Integer, Integer> e : count.entrySet()) {
             if (e.getValue() > 1) {
-                if (!first) sb.append(", ");
+                if (!first)
+                    sb.append(", ");
                 sb.append(e.getKey()).append(" (").append(e.getValue()).append(")");
                 first = false;
             }
